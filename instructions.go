@@ -13,7 +13,7 @@ func opAdd(pc *uint64, code []byte, memory *Memory, stack *Stack) ([]byte, error
 	return nil, nil
 }
 
-func makeOpPush(size int) executionFunc {
+func makeOpPush(size uint64) executionFunc {
 	return func(pc *uint64, code []byte, memory *Memory, stack *Stack) ([]byte, error) {
 
 		codeLen := len(code)
@@ -23,8 +23,9 @@ func makeOpPush(size int) executionFunc {
 		end := algorithm.IntMin(int64(codeLen), start+int64(size))
 
 		integer := stackElementPools.get().get()
-		stack.push(integer.SetBytes(algorithm.RightPadBytes(code[start:end], size)))
+		stack.push(integer.SetBytes(algorithm.RightPadBytes(code[start:end], int(size))))
 
+		*pc += size
 		return nil, nil
 	}
 }
